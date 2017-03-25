@@ -1,0 +1,19 @@
+<h1> Welcome, <%= @current_user.first_name %> <%= @current_user.last_name %>! </h1>
+<h2> Amount Needed: <%= @current_user.capital_needed %> </h2>
+<h2> Amount Raised: <%= @current_user.loans.sum(:amount_loaned) %> </h2>
+
+<h3> List of people who have lent you money: </h3>
+<table>
+    <tr>
+        <th> Name </th>
+        <th> Email </th>
+        <th> Amount Lent </th>
+    </tr>
+    <% @loans.each do |loan| %>
+        <tr>
+            <td> <%= loan.lender.first_name %> <%= loan.lender.last_name %> </td>
+            <td> <%= loan.lender.email %> </td>
+            <td> <%= loan.amount_loaned %> </td>
+        </tr>
+    <% end %>
+</table>

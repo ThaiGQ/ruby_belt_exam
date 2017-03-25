@@ -1,0 +1,70 @@
+<h1> Welcome, <%= @current_user.first_name %> <%= @current_user.last_name %>! </h1>
+<h2> Capital remaining: $<%= @current_capital %> </h2>
+
+<h3> List of people in need of aid: </h3>
+<table>
+    <tr>
+        <th> Name </th>
+        <th> Money Needed For </th>
+        <th> Description </th>
+        <th> Amount Needed </th>
+        <th> Amount Raised </th>
+        <th> Action </th>
+    </tr>
+    <% @borrowers.each do |borrower| %>
+        <% if !borrower.loans.find_by(lender_id: @current_user.id) %>
+            <tr>
+                <td> <%= borrower.first_name %> <%= borrower.last_name %> </td>
+                <td> <%= borrower.loan_name %> </td>
+                <td> <%= borrower.loan_detail %> </td>
+                <td> <%= borrower.capital_needed %> </td>
+                <td> <%= borrower.loans.sum(:amount_loaned) %> </td>
+                <td>
+                    <% if @current_capital > 0 %>
+                        <form class="" action="/loans" method="post">
+                            <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+                            <input type="number" name="amount_loaned" min="100" step="100">
+                            <input type="hidden" name="borrower_id" value="<%= borrower.id %>">
+                            <input type="hidden" name="current_capital" value="<%= @current_capital %>">
+                            <input type="submit" value="Lend">
+                        </form>
+                    <% end %>
+                </td>
+            </tr>
+        <% end %>
+    <% end %>
+</table>
+
+<h3> List of people you lent money to: </h3>
+<table>
+    <tr>
+        <th> Name </th>
+        <th> Money Needed For </th>
+        <th> Description </th>
+        <th> Amount Needed </th>
+        <th> Amount Raised </th>
+        <th> Amount Lent </th>
+        <th> Action </th>
+    </tr>
+    <% @loans.each do |loan| %>
+        <tr>
+            <td> <%= loan.borrower.first_name %> <%= loan.borrower.last_name %> </td>
+            <td> <%= loan.borrower.loan_name %> </td>
+            <td> <%= loan.borrower.loan_detail %> </td>
+            <td> <%= loan.borrower.capital_needed %> </td>
+            <td> <%= loan.borrower.loans.sum(:amount_loaned) %> </td>
+            <td> <%= loan.amount_loaned %> </td>
+            <% if loan.borrower.capital_needed > loan.borrower.loans.sum(:amount_loaned) && @current_capital > 0 %>
+                <td>
+                    <form class="" action="/loans/<%= loan.id %>" method="post">
+                        <input type="hidden" name="_method" value="patch">
+                        <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+                        <input type="number" name="amount_loaned" min="100" step="100">
+                        <input type="hidden" name="current_capital" value="<%= @current_capital %>">
+                        <input type="submit" value="Lend">
+                    </form>
+                </td>
+            <% end %>
+        </tr>
+    <% end %>
+</table>

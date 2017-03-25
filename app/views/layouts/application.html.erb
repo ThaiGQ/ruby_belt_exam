@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>RubyBeltEexam</title>
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+    <%= csrf_meta_tags %>
+</head>
+<body>
+    <% if flash[:notice] %>
+        <ul>
+            <% flash[:notice].each do |e| %>
+                <li><%= e %></li>
+            <% end %>
+        </ul>
+    <% end %>
+
+    <% if session[:user_id] %>
+        <form action="/sessions" method="post">
+            <input type="hidden" name="_method" value="delete">
+            <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+            <input type="submit" value="Log Out">
+        </form>
+    <% end %>
+
+    <%= yield %>
+
+</body>
+</html>
