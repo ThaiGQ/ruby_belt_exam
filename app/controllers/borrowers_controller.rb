@@ -1,6 +1,6 @@
 class BorrowersController < ApplicationController
     before_action :authorize, except: [:new, :create]
-    # before_action :confirm_user, except: [:new, :create]
+    before_action :confirm_user, except: [:new, :create]
 
     def create
         borrower = Borrower.create(borrower_params)
@@ -29,10 +29,9 @@ class BorrowersController < ApplicationController
             params.require(:borrower).permit(:first_name, :last_name, :email, :password, :password_confirmation, :loan_name, :loan_detail, :capital_needed).merge(capital_raised: 0)
         end
 
-        # def confirm_user
-        #     borrower = Borrower.find(session[:user_id])
-        #     if session[:user].first_name != borrower.first_name && session[:user].last_name != borrower.last_name
-        #         redirect_to "/users/#{session[:user_id]}"
-        #     end
-        # end
+        def confirm_user
+            if session[:user_id] != params[:borrower_id].to_i
+                redirect_to "/borrowers/#{session[:user_id]}"
+            end
+        end
 end
