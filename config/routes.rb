@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+    get "/" => "sessions#register"
     get 'sessions/register' => "sessions#register"
     get 'sessions/login' => "sessions#login"
     post "sessions" => "sessions#create"
