@@ -11,7 +11,7 @@ Rails.application.routes.draw do
     post 'loans' => "loans#create"
     patch "loans/:loan_id" => "loans#update"
 
-
+    get "*path" => redirect("/")
 
 
 
